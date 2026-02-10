@@ -18,3 +18,4 @@ print(Liste)
 
 with open(Ordner + "PlexListFilms.json", "w", encoding="utf-8") as f:
     f.write(json.dumps(Liste, indent=1, ensure_ascii=False))
+    
