@@ -150,7 +150,7 @@ Tom und Jerry Staffel 5 Folge 23
     liste = filmestr.split("\n")
     
     print(liste)
-    liste = serie("Navy CIS L.A.", 1, 13)
+    liste = serie("Alf", 3, 26)
     
     all = ""
     

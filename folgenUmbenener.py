@@ -2,7 +2,7 @@ import os
 import re
 
 
-def extract_episode_info(filename: str) -> tuple[str | None, int | None]:
+def extract_episode_info(filename: str):
     """Extrahiert Serienname und Folgennummer aus dem Dateinamen."""
     
     # Entferne Dateiendung für die Analyse
@@ -52,7 +52,7 @@ def extract_episode_info(filename: str) -> tuple[str | None, int | None]:
     return series_name, episode_num
 
 
-def extract_season_from_folder(folder_name: str) -> int | None:
+def extract_season_from_folder(folder_name: str):
     """Extrahiert Staffelnummer aus Ordnernamen wie 'Staffel 1', 'Season 2', 'S01'."""
     patterns = [
         r'[Ss]taffel[_\s]*(\d+)',
@@ -127,7 +127,8 @@ def rename_for_plex(path: str, series_name: str = None, season: int = 1, dry_run
         
         if dry_run:
             if os.path.exists(new_path):
-                print(f"  ⚠️  Existiert bereits: {new_name}")
+                #print(f"  ⚠️  Existiert bereits: {new_name}")
+                pass
             else:
                 print(f"  🔍 {filename}\n     → {new_name}")
         else:
@@ -194,6 +195,10 @@ def rename_recursive(root_path: str, dry_run: bool = True) -> None:
     
     for entry in sorted(os.listdir(root_path)):
         series_path = os.path.join(root_path, entry)
+        print(f"{series_path} ---")
+        if os.path.exists(os.path.join(series_path, ".ignore")):
+            print(f"  ⚠️  Ignoriere Ordner: {series_path}")
+            continue
         total_count += process_SingelSeries_folder(series_path, dry_run)
     
     print(f"\n{'='*50}")
