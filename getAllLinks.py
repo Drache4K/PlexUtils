@@ -92,7 +92,7 @@ def getName(url: str) -> str:
     except Exception as e:
         print(f"Fehler: {e}")
 
-def getLinks(liste: list) -> list:
+def getLinks(liste: list, retry) -> list:
     global browser, all
     
     notfound = []
@@ -111,21 +111,25 @@ def getLinks(liste: list) -> list:
         print(f"Gesuche: {i}")
         if not(i.lower() in name.lower()):
             print("Nicht gefunden!")
-            x =input("y -> OK, n -> Überspringen, m -> Manuell: ")
-            if x.lower() in ["y","j"]:
-                print("OK, weiter...")
-            elif x.lower() == "n":
-                print("Überspringen, weiter...")
+            if retry:
+                x =input("y -> OK, n -> Überspringen, m -> Manuell: ")
+                if x.lower() in ["y","j"]:
+                    print("OK, weiter...")
+                elif x.lower() == "n":
+                    print("Überspringen, weiter...")
+                    notfound.append(i)
+                    continue
+                elif x.lower() == "m":
+                    tmp = input("Manueller Link: ").strip()
+                    print("OK, weiter...")
+            else:
                 notfound.append(i)
-                continue
-            elif x.lower() == "m":
-                tmp = input("Manueller Link: ")
-                print("OK, weiter...")
         else:
             print("Gefunden!")
         
             
         all += '"' + tmp + '" '
+        all = all.replace('\n','')
         print(all)
     return notfound
     
@@ -150,16 +154,16 @@ Tom und Jerry Staffel 5 Folge 23
     liste = filmestr.split("\n")
     
     print(liste)
-    liste = serie("Alf", 3, 26)
+    liste = serie("Alf", 4, 24)
     
     all = ""
     
-    notfound = getLinks(liste)
+    notfound = getLinks(liste, False)
     
     print("\nNicht gefunden:\n" + str(len(notfound)) + "\n" + "\n".join(notfound))
     
     while len(notfound) > 0 and input("Retry (y/n): ").lower() in ["y","j"]:
-        notfound = getLinks(notfound)
+        notfound = getLinks(notfound, retry=True)
         print("\nNicht gefunden:\n" + str(len(notfound)) + "\n" + "\n".join(notfound))
     
     browser.quit()
