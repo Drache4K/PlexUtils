@@ -80,10 +80,6 @@ def extract_series_from_folder(folder_name: str) -> str:
 def generate_plex_name(series_name: str, season: int, episode: int, extension: str) -> str:
     """Generiert einen Plex-kompatiblen Dateinamen."""
     # Format: "Serienname - S01E01.ext"
-
-    if series_name == "yakari" and episode > 52:
-        season += 1
-        episode = episode % 52
     return f"{series_name}-s{season:02d}e{episode:02d}{extension}"
 
 
