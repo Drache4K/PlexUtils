@@ -36,6 +36,7 @@ while [ $StaffelEnd -lt 1 ]; do
     completed_ok=()
     # Aktuelles Verzeichnis für absolute Pfade
     current_dir="$PWD"
+    countDowloaded=0
     
     while true; do
         # Starte neue Downloads bis N erreicht (nur wenn noch nicht gestoppt)
@@ -87,6 +88,7 @@ while [ $StaffelEnd -lt 1 ]; do
                     else
                         echo "Folge $ep_num erfolgreich heruntergeladen"
                         completed_ok[$ep_num]=1
+                        ((countDowloaded++))
                     fi
                     rm -f "$hardcopy_file"
                 else
@@ -108,24 +110,10 @@ while [ $StaffelEnd -lt 1 ]; do
         done
     done
     
-    # Lösche Folgen die NACH der ersten nicht gefundenen Folge heruntergeladen wurden
-    # (diese sollten eigentlich nicht existieren, aber falls doch)
-    if [ $FirstNotFound -gt 0 ]; then
-        for ep in "${!completed_ok[@]}"; do
-            if [ $ep -gt $FirstNotFound ]; then
-                echo "Warnung: Folge $ep nach Lücke bei $FirstNotFound - wird übersprungen"
-            fi
-        done
-    fi
-    
     cd ..
     
-    # Berechne die tatsächliche Anzahl der heruntergeladenen Folgen
-    if [ $FirstNotFound -gt 0 ]; then
-        actual_count=$((FirstNotFound - 1))
-    else
-        actual_count=${#completed_ok[@]}
-    fi
+    actual_count=${#completed_ok[@]}
+    
     
     # Prüfe ob es die nächste Staffel gibt
     if [ $actual_count -eq 0 ]; then
