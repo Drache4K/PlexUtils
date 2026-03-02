@@ -48,7 +48,7 @@ def sort_and_rename_files(folder_path: str, prefix: str = "Folge", dry_run: bool
     print(f"Gefundene Dateien: {len(files)}")
     print("-" * 60)
     
-    video_extensions = {'.mp4', '.mkv', '.avi', '.mov', '.wmv'}
+    video_extensions = {'.mp4', '.mkv', '.avi', '.mov', '.wmv', '.webm', '.m4v'}
     thumbnail_extensions = {'.webp', '.jpg', '.jpeg', '.png', '.gif'}
 
     videos = []

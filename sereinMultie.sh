@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Anzahl paralleler Downloads (Parameter 2, Standard: 5)
-N=${2:-5}
+N=${2:-10}
 URL=$1
 
 if [ -z "$URL" ]; then
@@ -15,12 +15,8 @@ for s in $(screen -ls | grep "DL_" | awk '{print $1}'); do
     screen -S "$s" -X quit 2>/dev/null
 done
 
-Staffel=1
-StaffelEnd=0
 
-echo "Starte Downloads mit $N parallelen Screens..."
-
-while [ $StaffelEnd -lt 1 ]; do
+doIt(){
     mkdir -p "S$Staffel"
     cd "S$Staffel"
     
@@ -41,7 +37,7 @@ while [ $StaffelEnd -lt 1 ]; do
     while true; do
         # Starte neue Downloads bis N erreicht (nur wenn noch nicht gestoppt)
         while [ ${#active_screens[@]} -lt $N ] && [ $StopStartingNew -eq 0 ]; do
-            screen_name="DL_S${Staffel}_E${Folge}"
+            screen_name="DL_S${Staffel}_E${Folge}-${URL}" # Screen-Name
             hardcopy_file="${current_dir}/hardcopy_${Folge}.txt"
             
             echo "Starte Download: Staffel $Staffel, Folge $Folge"
@@ -49,7 +45,7 @@ while [ $StaffelEnd -lt 1 ]; do
             sleep 0.5
             
             # Download-Befehl mit hardcopy am Ende (absoluter Pfad!)
-            screen -S "$screen_name" -X stuff "python ~/voe-dl/dl.py -u \"$URL/staffel-$Staffel/episode-$Folge\" 2>&1; screen -S \"$screen_name\" -X hardcopy \"$hardcopy_file\"; exit\n"
+            screen -S "$screen_name" -X stuff "python3 ~/voe-dl/dl.py -u \"$URL/staffel-$Staffel/episode-$Folge\" 2>&1; screen -S \"$screen_name\" -X hardcopy \"$hardcopy_file\"; exit\n"
             
             active_screens[$screen_name]=$Folge
             ((Folge++))
@@ -127,6 +123,23 @@ while [ $StaffelEnd -lt 1 ]; do
     fi
     
     ((Staffel++))
+}
+
+echo "Starte Downloads mit $N parallelen Screens..."
+Staffel=0
+StaffelEnd=0
+
+doIt
+
+Staffel=1
+StaffelEnd=0
+
+
+
+while [ $StaffelEnd -lt 1 ]; do
+
+    doIt
+    
 done
 
 # Aufräumen: Leere Staffel-Ordner entfernen
