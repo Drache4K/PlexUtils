@@ -11,7 +11,7 @@ if [ -z "$URL" ]; then
 fi
 
 # Alle alten Downloader-Screens beenden
-for s in $(screen -ls | grep "DL_" | awk '{print $1}'); do
+for s in $(screen -ls | grep "${URL}" | awk '{print $1}'); do
     screen -S "$s" -X quit 2>/dev/null
 done
 
